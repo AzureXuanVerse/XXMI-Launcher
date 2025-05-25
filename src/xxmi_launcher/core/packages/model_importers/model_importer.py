@@ -252,10 +252,8 @@ class ModelImporterPackage(Package):
         if len(game_folders_index) == 1:
             game_folder_id = 0
             user_confirmed_game_folder = Events.Call(Events.Application.ShowInfo(
-                message=f'Detected game installation:\n\n'
-                        f'{game_folders_index[0]}\n\n'
-                        f'Please check if it is desired Game Folder or change it in General Settings.',
-                confirm_text='Confirm',
+                message=I18n._('messages.game_installation_detected').format(game_path=game_folders_index[0]),
+                confirm_text=I18n._('buttons.confirm'),
                 cancel_text='Open Settings',
                 modal=True,
             ))
@@ -263,9 +261,8 @@ class ModelImporterPackage(Package):
                 user_confirmed_game_folder = True
         else:
             (user_confirmed_game_folder, game_folder_id) = Events.Call(Events.Application.ShowWarning(
-                message=f'Detected game installations:\n\n'
-                        f'Select desired Game Folder from the list below or set it in General Settings:\n',
-                confirm_text='Confirm',
+                message=I18n._('messages.game_installations_detected'),
+                confirm_text=I18n._('buttons.confirm'),
                 cancel_text='Open Settings',
                 radio_options=game_folders_index,
                 modal=True,

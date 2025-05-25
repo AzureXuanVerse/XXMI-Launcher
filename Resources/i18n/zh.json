@@ -373,6 +373,8 @@
         "info_title": "信息",
         "wounded_effect_title": "检测到受伤效果",
         "wounded_effect_message": "看起来游戏设置中启用了受伤效果。\n大多数模组不支持此效果，受到几次伤害后纹理将会损坏。\n\n点击`禁用`关闭它以确保正确渲染模组纹理。\n如果您从不受伤或使用受伤效果移除工具，请点击`保持启用`。",
+        "game_installation_detected": "检测到游戏安装：\n\n{game_path}\n\n请检查这是否是所需的游戏文件夹，或在常规设置中更改它。",
+        "game_installations_detected": "检测到游戏安装：\n\n从下面的列表中选择所需的游戏文件夹或在常规设置中设置：\n",
         "invalid_ww_installation": "检测到无效的鸣潮安装（Steam）：\n{game_path}\n\n包含 {exe_name} 的 {folder_name} 文件夹必须直接放在：\n{common_folder}\n\n请通过 Steam 运行游戏文件修复或手动修复。"
     },
     "updates": {

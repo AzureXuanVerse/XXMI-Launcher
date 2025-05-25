@@ -373,6 +373,8 @@
         "info_title": "Information",
         "wounded_effect_title": "Wounded Effect Detected",
         "wounded_effect_message": "It appears that wounded effects are enabled in game settings.\nMost mods don't support this effect, and textures will be damaged after taking a few hits.\n\nClick `Disable` to turn it off to ensure correct rendering of mod textures.\nClick `Keep Enabled` if you never get wounded or use a wounded effect removal tool.",
+        "game_installation_detected": "Detected game installation:\n\n{game_path}\n\nPlease check if it is desired Game Folder or change it in General Settings.",
+        "game_installations_detected": "Detected game installations:\n\nSelect desired Game Folder from the list below or set it in General Settings:\n",
         "invalid_ww_installation": "Invalid Wuthering Waves installation detected (Steam):\n{game_path}\n\nThe {folder_name} folder containing {exe_name} must be placed directly in:\n{common_folder}\n\nPlease run game file repair through Steam or fix it manually."
     },
     "updates": {
