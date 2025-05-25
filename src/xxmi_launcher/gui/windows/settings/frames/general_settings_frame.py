@@ -1,5 +1,6 @@
 import subprocess
 import webbrowser
+import os
 
 from pathlib import Path
 from customtkinter import filedialog, ThemeManager
@@ -374,13 +375,20 @@ class OpenEngineIniButton(UIButton):
 
     def open_engine_ini(self):
         game_folder = Vars.Active.Importer.game_folder.get()
-        engine_ini = f"{game_folder}\\Engine\\Config\\Engine.ini"
+        if Config.Launcher.active_importer == 'WWMI':
+            engine_ini = f"{game_folder}\\Client\\Saved\\Config\\WindowsNoEditor\\Engine.ini"
+        else:
+            engine_ini = f"{game_folder}\\Engine\\Config\\Engine.ini"
         
         try:
             engine_ini_path = Path(engine_ini)
             if not engine_ini_path.exists():
-                return
-            subprocess.run(f'explorer /select,"{engine_ini_path.absolute()}"', check=True)
+                # 如果文件不存在，创建目录和文件
+                engine_ini_path.parent.mkdir(parents=True, exist_ok=True)
+                engine_ini_path.write_text('', encoding='utf-8')
+            
+            # 直接打开文件而不是选中文件
+            os.startfile(str(engine_ini_path))
         except Exception as e:
             print(e)
 
