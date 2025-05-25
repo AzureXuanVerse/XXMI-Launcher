@@ -690,7 +690,7 @@ class Version:
     def parse_version(self):
         with open(self.wwmi_ini_path, 'r', encoding='utf-8') as f:
 
-            version_pattern = re.compile(r'^global \$version = (\d+)\.*(\d)(\d*)')
+            version_pattern = re.compile(r'^global \$wwmi_version = (\d+)\.(\d)(\d*)')
 
             for line in f.readlines():
 
@@ -701,8 +701,11 @@ class Version:
 
                 result = list(result[0])
 
+                # WWMI uses format like 0.80, which should be interpreted as 0.8.0
                 if len(result) == 2:
-                    result.append(0)
+                    result.append('0')
+                elif len(result) == 3 and result[2] == '':
+                    result[2] = '0'
 
                 if len(result) != 3:
                     raise ValueError(I18n._('errors.packages.model_importers.wwmi.malformed_version'))

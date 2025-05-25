@@ -21,3 +21,5 @@ __pycache__/
 Resources/Security/private_key.der
 Resources/Security/public_key.der
 /Tools
+/Resources/Bin
+/Resources/Packages
