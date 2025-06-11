@@ -136,10 +136,18 @@ class ZZMIPackage(ModelImporterPackage):
         return paths
 
     def validate_game_exe_path(self, game_path: Path) -> Path:
-        game_exe_path = game_path / 'ZenlessZoneZero.exe'
-        if not game_exe_path.is_file():
-            raise ValueError(I18n._('errors.packages.model_importers.zzmi.executable_not_found').format(process_name=game_exe_path.name))
-        return game_exe_path
+        # Try both possible executable names
+        possible_exes = ['ZenlessZoneZero.exe', 'ZenlessZoneZeroBeta.exe']
+
+        for exe_name in possible_exes:
+            game_exe_path = game_path / exe_name
+            if game_exe_path.is_file():
+                return game_exe_path
+
+        # If neither was found, raise an error
+        raise ValueError(I18n._('errors.packages.model_importers.zzmi.executable_not_found').format(
+            process_name=" or ".join(possible_exes)
+        ))
 
     def initialize_game_launch(self, game_path: Path):
         if Config.Active.Importer.custom_launch_inject_mode != 'Bypass':
@@ -174,7 +182,22 @@ class ZZMIPackage(ModelImporterPackage):
 
         Events.Fire(Events.Application.StatusUpdate(status=I18n._('status.configuring_in_game_settings')))
 
-        config_path = game_path / 'ZenlessZoneZero_Data' / 'Persistent' / 'LocalStorage' / 'GENERAL_DATA.bin'
+        # Try both possible data paths
+        possible_data_dirs = ['ZenlessZoneZero_Data', 'ZenlessZoneZeroBeta_Data']
+        config_path = None
+
+        for data_dir in possible_data_dirs:
+            test_path = game_path / data_dir / 'Persistent' / 'LocalStorage' / 'GENERAL_DATA.bin'
+            if test_path.exists():
+                config_path = test_path
+                break
+
+        if config_path is None:
+            raise FileNotFoundError(
+                I18n._('errors.packages.model_importers.zzmi.config_not_found').format(
+                    possible_paths=", ".join(possible_data_dirs)
+                )
+            )
 
         settings_manager = SettingsManager(config_path)
 
