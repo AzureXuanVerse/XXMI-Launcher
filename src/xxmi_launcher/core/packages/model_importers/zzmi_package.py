@@ -102,40 +102,73 @@ class ZZMIPackage(ModelImporterPackage):
             return ''
 
     def autodetect_game_folders(self) -> List[Path]:
-        paths = self.reg_search_game_folders(['ZenlessZoneZero.exe'])
+        # 搜索正式版和测试服
+        paths = self.reg_search_game_folders(['ZenlessZoneZero.exe', 'ZenlessZoneZeroBeta.exe'])
 
+        # 正式版路径匹配
         common_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*Zenless[^:\"\']*)')
         known_children = ['ZenlessZoneZero_Data']
+        
+        # 测试服路径匹配
+        beta_common_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*ZenlessZoneZeroBeta[^:\"\']*)')
+        beta_known_children = ['ZenlessZoneZeroBeta_Data']
 
         # "installPath":"D:\\Games\\ZenlessZoneZero Game"
         # "persistentInstallPath":"D:\\Games\\ZenlessZoneZero Game"
         hoyoplay_pattern = re.compile(r'\"(?:installPath|persistentInstallPath)\":\"([a-zA-Z]:[^:^\"]*)\"')
 
+        # 搜索正式版
         paths += self.get_paths_from_hoyoplay([common_pattern, hoyoplay_pattern], known_children)
+        # 搜索测试服
+        paths += self.get_paths_from_hoyoplay([beta_common_pattern, hoyoplay_pattern], beta_known_children)
 
         # WwiseUnity: Setting Plugin DLL path to: C:/Games/ZenlessZoneZero Game/ZenlessZoneZero_Data\Plugins\x86_64
         # [Subsystems] Discovering subsystems at path C:/Games/ZenlessZoneZero Game/ZenlessZoneZero_Data/UnitySubsystems
         player_log_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*)(?:Plugins|UnitySubsystems)')
+        # 测试服日志路径模式
+        beta_player_log_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*[/\\])ZenlessZoneZeroBeta_Data')
 
+        # 正式版日志路径
         player_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / 'ZenlessZoneZero' / 'Player.log'
         paths += self.find_paths_in_file(player_log_path, [common_pattern, player_log_pattern], known_children)
 
         player_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / 'ZenlessZoneZero' / 'Player-prev.log'
         paths += self.find_paths_in_file(player_log_path, [common_pattern, player_log_pattern], known_children)
 
+        # 测试服日志路径
+        beta_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / '绝区零Beta' / 'Player.log'
+        paths += self.find_paths_in_file(beta_log_path, [beta_common_pattern, beta_player_log_pattern], beta_known_children)
+
+        beta_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / '绝区零Beta' / 'Player-prev.log'
+        paths += self.find_paths_in_file(beta_log_path, [beta_common_pattern, beta_player_log_pattern], beta_known_children)
+
         # [0704/170821.845:INFO:API.cpp(331)] zfb_init: Using --apm_config={"astrolabePath":"Astrolabe.dll","reportPath":"C:\\Games\\ZenlessZoneZero Game\\ZenlessZoneZero_Data\\SDKCaches\\webview","logLevel":2"}
         output_log_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*)SDKCaches"')
+        # 测试服输出日志模式
+        beta_output_log_pattern = re.compile(r'([a-zA-Z]:[^:\"\']*[/\\])ZenlessZoneZeroBeta_Data')
 
+        # 正式版输出日志
         output_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / 'ZenlessZoneZero' / 'output_log.txt'
         paths += self.find_paths_in_file(output_log_path, [common_pattern, output_log_pattern], known_children)
+
+        # 测试服输出日志
+        beta_output_log_path = Path(os.getenv('APPDATA')).parent / 'LocalLow' / 'miHoYo' / '绝区零Beta' / 'output_log.txt'
+        paths += self.find_paths_in_file(beta_output_log_path, [beta_common_pattern, beta_output_log_pattern], beta_known_children)
 
         return paths
 
     def validate_game_exe_path(self, game_path: Path) -> Path:
+        # 优先检查正式版
         game_exe_path = game_path / 'ZenlessZoneZero.exe'
-        if not game_exe_path.is_file():
-            raise ValueError(T('zzmi_game_exe_not_found', 'Game executable {} not found!').format(game_exe_path.name))
-        return game_exe_path
+        if game_exe_path.is_file():
+            return game_exe_path
+        
+        # 检查测试服
+        beta_exe_path = game_path / 'ZenlessZoneZeroBeta.exe'
+        if beta_exe_path.is_file():
+            return beta_exe_path
+        
+        raise ValueError(T('zzmi_game_exe_not_found', 'Game executable (ZenlessZoneZero.exe or ZenlessZoneZeroBeta.exe) not found!'))
 
     def initialize_game_launch(self, game_path: Path):
         if Config.Active.Importer.custom_launch_inject_mode != 'Bypass':
@@ -169,7 +202,12 @@ class ZZMIPackage(ModelImporterPackage):
     def configure_game_settings(self, game_path: Path):
         Events.Fire(Events.Application.StatusUpdate(status=L('zzmi_configuring_settings', 'Configuring in-game settings...')))
 
+        # 优先检查正式版配置路径
         config_path = game_path / 'ZenlessZoneZero_Data' / 'Persistent' / 'LocalStorage' / 'GENERAL_DATA.bin'
+        
+        # 如果正式版配置不存在，检查测试服配置路径
+        if not config_path.exists():
+            config_path = game_path / 'ZenlessZoneZeroBeta_Data' / 'Persistent' / 'LocalStorage' / 'GENERAL_DATA.bin'
 
         settings_manager = SettingsManager(config_path)
 
