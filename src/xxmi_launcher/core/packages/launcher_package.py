@@ -42,7 +42,7 @@ class LauncherManagerConfig:
     verify_ssl: bool = True
     proxy: ProxyConfig = field(default_factory=lambda: ProxyConfig())
     credits_shown: bool = False
-    language: str = 'English'
+    language: str = '中文'
 
 
 @dataclass
