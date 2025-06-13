@@ -23,8 +23,16 @@ src = "*Model Importer package offers a set of API functions required for mods t
 loc = "*模型导入器包提供了一套 API 函数，用于在指定游戏中运行模组。*"
 
 [package_release_notes]
-src = "{package_release_notes}\n\n<font color=\"#3366ff\">*<u>Left-Click</u> to open {package_name} Package GitHub releases for full changelog.*</font>\n<font color=\"#aaaaaa\">{package_description}</font>"
-loc = "{package_release_notes}\n\n<font color=\"#3366ff\">*<u>左键点击</u> 打开 {package_name} 包的 GitHub 发布页面查看完整更新日志。*</font>\n<font color=\"#aaaaaa\">{package_description}</font>"
+src = "{package_release_notes}\n\n{actions_tooltip}\n<font color=\"#aaaaaa\">{package_description}</font>"
+loc = "{package_release_notes}\n\n{actions_tooltip}\n<font color=\"#aaaaaa\">{package_description}</font>"
+
+[package_description_tooltip_open_github_changelog]
+src = "<font color=\"#3366ff\">*<u>Left-Click</u> to open {package_name} Dev Blog on Patreon.*</font>\n<font color=\"#3366ff\">*<u>Right-Click</u> to open {package_name} GitHub releases for full changelog.*</font>"
+loc = "<font color=\"#3366ff\">*<u>左键点击</u> 在 Patreon 上打开 {package_name} 开发博客。*</font>\n<font color=\"#3366ff\">*<u>右键点击</u> 打开 {package_name} GitHub 发布页面查看完整更新日志。*</font>"
+
+[package_description_tooltip_open_dev_blog]
+src = "<font color=\"#3366ff\">*<u>Left-Click</u> to open {package_name} GitHub releases for full changelog.*</font>"
+loc = "<font color=\"#3366ff\">*<u>左键点击</u> 打开 {package_name} GitHub 发布页面查看完整更新日志。*</font>"
 
 # 更新器包相关
 [updater_start_failed]
@@ -1411,6 +1419,22 @@ loc = "启动方式："
 [general_settings_start_method_tooltip]
 src = "**Native**: Use native Python call to start game process (`subprocess.popen`).\n**Shell**: Use external library C++ call to start game process (`ShellExecute`)"
 loc = "**原生**：使用原生Python调用启动游戏进程（`subprocess.popen`）。\n**Shell**：使用外部库C++调用启动游戏进程（`ShellExecute`）"
+
+[general_settings_xxmi_delay_label]
+src = "XXMI Delay:"
+loc = "XXMI延迟："
+
+[general_settings_xxmi_delay_tooltip_base]
+src = "Delay in milliseconds for how long injected XXMI DLL (3dmigoto) must wait before initialization.\n"
+loc = "注入的XXMI DLL（3dmigoto）在初始化前必须等待的毫秒延迟时间。\n"
+
+[general_settings_xxmi_delay_tooltip_wwmi]
+src = "<font color=\"red\">⚠ Wuthering Waves crashes on launch with wrong delay! ⚠</font>\n<font color=\"#8B8000\">⚠ If default value fails, try to increase or decrease it until WuWa stops crashing. ⚠</font>\n## Known values for Wuthering Waves 2.4:\n- **500**: Default, works for most users.\n- **150**: Minimal known value to work along with ReShade.\n- **50**: Minimal known value to work.\n- **1000+**: Some users need really huge delays."
+loc = "<font color=\"red\">⚠ 鸣潮在启动时会因错误的延迟而崩溃！⚠</font>\n<font color=\"#8B8000\">⚠ 如果默认值失败，请尝试增加或减少延迟直到鸣潮停止崩溃。⚠</font>\n## 鸣潮2.4的已知值：\n- **500**：默认值，适用于大多数用户。\n- **150**：与ReShade一起工作的最小已知值。\n- **50**：工作的最小已知值。\n- **1000+**：有些用户需要很大的延迟。"
+
+[general_settings_xxmi_delay_tooltip_general]
+src = "If game crashes with no mods, try to increase it. Start with steps of 50 and increase them as you go."
+loc = "如果游戏在没有模组的情况下崩溃，请尝试增加延迟。从50开始逐步增加。"
 
 [general_settings_process_priority_label]
 src = "Process Priority:"
