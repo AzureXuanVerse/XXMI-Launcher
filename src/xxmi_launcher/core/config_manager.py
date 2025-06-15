@@ -196,8 +196,7 @@ class AppConfig:
                     dll_initialization_delay = ini.get_section('System').get_option('dll_initialization_delay')
                     if dll_initialization_delay is not None:
                         dll_initialization_delay = int(dll_initialization_delay)
-                        log.debug(
-                            f'Detected existing dll_initialization_delay in for {package_name}: {dll_initialization_delay}')
+                        log.debug(f'Detected existing dll_initialization_delay in for {package_name}: {dll_initialization_delay}')
                     else:
                         dll_initialization_delay = 0
             except Exception as e:
@@ -215,6 +214,10 @@ class AppConfig:
 
             log.debug(f'Set xxmi_dll_init_delay for {package_name} to {dll_initialization_delay}')
 
+    def run_patch_185(self):
+        importer = self.Importers.__dict__['WWMI']
+        importer.Importer.engine_ini['ConsoleVariables']['r.Streaming.Boost'] = 30
+
     def upgrade(self, old_version, new_version):
         # Save config to file and exit early if old version is empty (aka fresh installation)
         if not old_version:
@@ -230,6 +233,7 @@ class AppConfig:
             '1.6.0': self.run_patch_160,
             '1.6.3': self.run_patch_163,
             '1.8.4': self.run_patch_184,
+            '1.8.5': self.run_patch_185,
         }
         applied_patches = []
         for patch_version, patch_func in patches.items():

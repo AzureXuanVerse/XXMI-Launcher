@@ -916,11 +916,23 @@ loc = "取消"
 # GUI - Widgets Messages
 [widgets_failed_parse_font]
 src = "Failed to parse font from {}!"
-loc = "解析字体 {} 失败！"
+loc = "无法从 {} 解析字体！"
 
 [widgets_failed_set_checkbox_value]
 src = "Failed to set checkbox to unknown value {}!"
-loc = "设置复选框为未知值 {} 失败！"
+loc = "无法将复选框设置为未知值 {}！"
+
+[widgets_unknown_input_filter]
+src = "Unknown input filter type `{}`!"
+loc = "未知的输入过滤器类型 `{}`！"
+
+[widgets_input_filter_invalid_float]
+src = "Invalid float value for input filter!"
+loc = "输入过滤器的浮点数值无效！"
+
+[widgets_input_filter_invalid_int]
+src = "Invalid integer value for input filter!"
+loc = "输入过滤器的整数值无效！"
 
 # Donate Frame
 [donate_popup_introduction]
@@ -1422,19 +1434,31 @@ loc = "**原生**：使用原生Python调用启动游戏进程（`subprocess.pop
 
 [general_settings_xxmi_delay_label]
 src = "XXMI Delay:"
-loc = "XXMI延迟："
+loc = "XXMI 延迟："
 
 [general_settings_xxmi_delay_tooltip_base]
 src = "Delay in milliseconds for how long injected XXMI DLL (3dmigoto) must wait before initialization.\n"
-loc = "注入的XXMI DLL（3dmigoto）在初始化前必须等待的毫秒延迟时间。\n"
+loc = "注入的 XXMI DLL (3dmigoto) 在初始化前需要等待的毫秒数。\n"
 
 [general_settings_xxmi_delay_tooltip_wwmi]
-src = "<font color=\"red\">⚠ Wuthering Waves crashes on launch with wrong delay! ⚠</font>\n<font color=\"#8B8000\">⚠ If default value fails, try to increase or decrease it until WuWa stops crashing. ⚠</font>\n## Known values for Wuthering Waves 2.4:\n- **500**: Default, works for most users.\n- **150**: Minimal known value to work along with ReShade.\n- **50**: Minimal known value to work.\n- **1000+**: Some users need really huge delays."
-loc = "<font color=\"red\">⚠ 鸣潮在启动时会因错误的延迟而崩溃！⚠</font>\n<font color=\"#8B8000\">⚠ 如果默认值失败，请尝试增加或减少延迟直到鸣潮停止崩溃。⚠</font>\n## 鸣潮2.4的已知值：\n- **500**：默认值，适用于大多数用户。\n- **150**：与ReShade一起工作的最小已知值。\n- **50**：工作的最小已知值。\n- **1000+**：有些用户需要很大的延迟。"
+src = """<font color="red">⚠ Wuthering Waves crashes on launch with wrong delay! ⚠</font>
+<font color="#8B8000">⚠ If default value fails, try to increase or decrease it until WuWa stops crashing. ⚠</font>
+## Known values for Wuthering Waves 2.4:
+- **500**: Default, works for most users.
+- **150**: Minimal known value to work along with ReShade.
+- **50**: Minimal known value to work.
+- **1000+**: Some users need really huge delays."""
+loc = """<font color="red">⚠ 鸣潮在延迟设置错误时会崩溃！⚠</font>
+<font color="#8B8000">⚠ 如果默认值不起作用，请尝试增加或减少数值直到游戏不再崩溃。⚠</font>
+## 鸣潮 2.4 已知可用值：
+- **500**：默认值，适用于大多数用户。
+- **150**：与 ReShade 一起使用时的最小已知值。
+- **50**：可用的最小已知值。
+- **1000+**：某些用户需要非常大的延迟值。"""
 
 [general_settings_xxmi_delay_tooltip_general]
 src = "If game crashes with no mods, try to increase it. Start with steps of 50 and increase them as you go."
-loc = "如果游戏在没有模组的情况下崩溃，请尝试增加延迟。从50开始逐步增加。"
+loc = "如果游戏在没有模组的情况下崩溃，请尝试增加此值。从50开始逐步增加。"
 
 [general_settings_process_priority_label]
 src = "Process Priority:"
@@ -1466,15 +1490,15 @@ loc = "**启用**：游戏启动前确保ZZMI兼容的游戏内**图形设置**�
 
 [general_settings_open_engine_ini_button]
 src = "🔍 Open Engine.ini"
-loc = "🔍 打开Engine.ini"
+loc = "🔍 打开 Engine.ini"
 
 [general_settings_open_engine_ini_tooltip]
 src = "Open Engine.ini in default text editor file for manual tweaking."
-loc = "在默认文本编辑器中打开Engine.ini文件进行手动调整。"
+loc = "在默认文本编辑器中打开 Engine.ini 进行手动调整。"
 
 [general_settings_tweaks_label]
 src = "Tweaks:"
-loc = "调整："
+loc = "调整项："
 
 [general_settings_unlock_fps_checkbox]
 src = "Force 120 FPS"
@@ -1506,11 +1530,15 @@ loc = "**启用**：游戏启动时向`Engine.ini`的`[SystemSettings]`部分添
 
 [general_settings_enable_hdr_checkbox]
 src = "Enable HDR"
-loc = "启用HDR"
+loc = "启用 HDR"
 
 [general_settings_enable_hdr_tooltip]
-src = "**Warning**! Your monitor must support HDR and `Use HDR` must be enabled in Windows Display settings!\n**Enabled**: Turn HDR On. Creates HDR registry record each time before the game launch.\n**Disabled**: Turn HDR Off. No extra action required, game auto-removes HDR registry record on launch."
-loc = "**警告**！您的显示器必须支持HDR，且Windows显示设置中必须启用`使用HDR`！\n**启用**：打开HDR。每次游戏启动前创建HDR注册表记录。\n**禁用**：关闭HDR。无需额外操作，游戏启动时自动移除HDR注册表记录。"
+src = """**Warning**! Your monitor must support HDR and `Use HDR` must be enabled in Windows Display settings!
+**Enabled**: Turn HDR On. Creates HDR registry record each time before the game launch.
+**Disabled**: Turn HDR Off. No extra action required, game auto-removes HDR registry record on launch."""
+loc = """**警告**！您的显示器必须支持 HDR，且 Windows 显示设置中必须启用`使用 HDR`！
+**启用**：开启 HDR。每次游戏启动前创建 HDR 注册表记录。
+**禁用**：关闭 HDR。无需额外操作，游戏启动时会自动移除 HDR 注册表记录。"""
 
 [general_settings_disable_wounded_effect_checkbox]
 src = "Disable Wounded Effect"
@@ -1518,7 +1546,33 @@ loc = "禁用受伤效果"
 
 [general_settings_disable_wounded_effect_tooltip]
 src = "Most mods do not support this effect, so textures usually break after few hits taken.\n**Enabled**: Turn the effect `Off`. Ensures proper rendering of modded textures.\n**Disabled**: Turn the effect `On`. Select this if you use `Injured Effect Remover` tool."
-loc = "大多数模组不支持此效果，受击几次后纹理通常会损坏。\n**启用**：关闭此效果。确保模组纹理正确渲染。\n**禁用**：打开此效果。如果您使用`受伤效果移除器`工具请选择此项。"
+loc = "大多数模组不支持此效果，所以在受到几次伤害后纹理通常会损坏。\n**启用**：关闭此效果。确保正确渲染模组纹理。\n**禁用**：开启此效果。如果您使用了`受伤效果移除器`工具，请选择此项。"
+
+[general_settings_texture_boost_label]
+src = "Texture Boost:"
+loc = "纹理加速："
+
+[general_settings_texture_boost_tooltip]
+src = """
+Value to set as **r.Streaming.Boost** in **Engine.ini**.
+Fine tuning the value allows to prevent short texture glitch on switch to modded characters.
+With low values, try decimals (e.g. `1.1` or `2.5`).
+## Approximate values for Wuthering Waves 2.4:
+- **2.75**: RTX 4090.
+- **30.0**: RTX 3070.
+"""
+loc = """
+在 **Engine.ini** 中设置 **r.Streaming.Boost** 的值。
+微调此值可以防止切换到模组角色时出现短暂的纹理故障。
+对于低数值，可以尝试使用小数（例如 `1.1` 或 `2.5`）。
+## 鸣潮 2.4 的参考值：
+- **2.75**：RTX 4090。
+- **30.0**：RTX 3070。
+"""
+
+[general_settings_engine_ini_not_found]
+src = 'File does not exist: "{}"!'
+loc = '文件不存在："{}"！'
 
 # Advanced Settings Frame
 [advanced_settings_update_policy_label]

@@ -120,6 +120,8 @@ class AutoConfigFrame(UIFrame):
         
         if Vars.Launcher.active_importer.get() == 'WWMI':
             self.put(DisableWoundedEffectCheckbox(self)).grid(row=0, column=1, padx=(10, 20), pady=(0, 0), sticky='w')
+            self.put(TextureStreamingBoostLabel(self)).grid(row=0, column=2, padx=(10, 0), pady=(0, 0), sticky='w')
+            self.put(TextureStreamingBoostEntry(self)).grid(row=0, column=3, padx=(10, 20), pady=(0, 0), sticky='w')
 
 
 class GameFolderLabel(UILabel):
@@ -183,6 +185,7 @@ class GameFolderErrorLabel(UILabel):
     def _show(self):
         if self.winfo_manager():
             super()._show()
+
 
 class ChangeGameFolderButton(UIButton):
     def __init__(self, master):
@@ -305,17 +308,22 @@ class StartMethodLabel(UILabel):
 class StartMethodOptionMenu(UIOptionMenu):
     def __init__(self, master):
         super().__init__(
-            values=['Native', 'Shell'],
+            values=['Native', 'Shell', 'Manual'],
             variable=Vars.Active.Importer.process_start_method,
             width=140,
             height=36,
             font=('Arial', 14),
             dropdown_font=('Arial', 14),
             master=master)
-        self.set_tooltip(str(L('general_settings_start_method_tooltip', 
-            '**Native**: Use native Python call to start game process (`subprocess.popen`).\n'
-            '**Shell**: Use external library C++ call to start game process (`ShellExecute`)')))
+        self.set_tooltip(self.get_tooltip)
 
+    def get_tooltip(self):
+        return dedent(f"""
+            **Native**: Create the game process directly. Usually it's the most reliable way.
+            **Shell**: Start the game process via system console. Worth to try if you have some issues with Native.
+            **Manual**: Skip launching the game on **Start** button press. Wait for user to launch it manually 
+     ({Config.Launcher.start_timeout}s timeout).   
+             """)
 
 class MigotoInitDelayLabel(UILabel):
     def __init__(self, master):
@@ -330,6 +338,7 @@ class MigotoInitDelayEntry(UIEntry):
     def __init__(self, master):
         super().__init__(
             textvariable=Vars.Active.Importer.xxmi_dll_init_delay,
+            input_filter='INT',
             width=50,
             height=36,
             font=('Arial', 14),
@@ -437,6 +446,58 @@ class ConfigureGameCheckbox(UICheckbox):
                 '<font color="red">⚠ Mods will not work with wrong settings! ⚠</font>'))
         return msg.strip()
 
+class DisableWoundedEffectCheckbox(UICheckbox):
+    def __init__(self, master):
+        super().__init__(
+            text=str(L('general_settings_disable_wounded_effect_checkbox', 'Disable Wounded Effect')),
+            variable=Vars.Active.Importer.disable_wounded_fx,
+            master=master)
+        self.set_tooltip(str(L('general_settings_disable_wounded_effect_tooltip',
+            'Most mods do not support this effect, so textures usually break after few hits taken.\n'
+            '**Enabled**: Turn the effect `Off`. Ensures proper rendering of modded textures.\n'
+            "**Disabled**: Turn the effect `On`. Select this if you use `Injured Effect Remover` tool."
+        )))
+
+        self.trace_write(Vars.Active.Importer.configure_game, self.handle_write_configure_game)
+
+    def handle_write_configure_game(self, var, val):
+        if val:
+            self.configure(state='normal')
+        else:
+            self.configure(state='disabled')
+
+class TextureStreamingBoostLabel(UILabel):
+    def __init__(self, master):
+        super().__init__(
+            text=str(L('general_settings_texture_boost_label', 'Texture Boost:')),
+            font=('Microsoft YaHei', 14, 'bold'),
+            fg_color='transparent',
+            master=master)
+
+
+class TextureStreamingBoostEntry(UIEntry):
+    def __init__(self, master):
+        super().__init__(
+            textvariable=Vars.Active.Importer.texture_streaming_boost,
+            input_filter='FLOAT',
+            width=50,
+            height=36,
+            font=('Arial', 14),
+            master=master)
+
+        self.set_tooltip(self.get_tooltip)
+
+    def get_tooltip(self):
+        msg = dedent(str(L('general_settings_texture_boost_tooltip', """
+            Value to set as **r.Streaming.Boost** in **Engine.ini**.
+            Fine tuning the value allows to prevent short texture glitch on switch to modded characters.
+            With low values, try decimals (e.g. `1.1` or `2.5`).
+            ## Approximate values for Wuthering Waves 2.4:
+            - **2.75**: RTX 4090.
+            - **30.0**: RTX 3070.
+        """)))
+        return msg
+
 
 class OpenEngineIniButton(UIButton):
     def __init__(self, master):
@@ -455,7 +516,7 @@ class OpenEngineIniButton(UIButton):
         if engine_ini.is_file():
             subprocess.Popen([f'{str(engine_ini)}'], shell=True)
         else:
-            raise ValueError(f'File does not exist: "{engine_ini}"!')
+            raise ValueError(str(L('general_settings_engine_ini_not_found', 'File does not exist: "{}"!')).format(engine_ini))
 
 
 class TweaksLabel(UILabel):
@@ -553,23 +614,3 @@ class EnableHDR(UICheckbox):
             '**Warning**! Your monitor must support HDR and `Use HDR` must be enabled in Windows Display settings!\n'
             '**Enabled**: Turn HDR On. Creates HDR registry record each time before the game launch.\n'
             '**Disabled**: Turn HDR Off. No extra action required, game auto-removes HDR registry record on launch.')))
-
-
-class DisableWoundedEffectCheckbox(UICheckbox):
-    def __init__(self, master):
-        super().__init__(
-            text=str(L('general_settings_disable_wounded_effect_checkbox', 'Disable Wounded Effect')),
-            variable=Vars.Active.Importer.disable_wounded_fx,
-            master=master)
-        self.set_tooltip(str(L('general_settings_disable_wounded_effect_tooltip',
-            'Most mods do not support this effect, so textures usually break after few hits taken.\n'
-            '**Enabled**: Turn the effect `Off`. Ensures proper rendering of modded textures.\n'
-            "**Disabled**: Turn the effect `On`. Select this if you use `Injured Effect Remover` tool.")))
-
-        self.trace_write(Vars.Active.Importer.configure_game, self.handle_write_configure_game)
-
-    def handle_write_configure_game(self, var, val):
-        if val:
-            self.configure(state='normal')
-        else:
-            self.configure(state='disabled')

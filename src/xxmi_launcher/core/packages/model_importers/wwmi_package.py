@@ -72,6 +72,7 @@ class WWMIConfig(ModelImporterConfig):
         'ConsoleVariables': {
             'r.Kuro.SkeletalMesh.LODDistanceScale': 24,
             'r.Streaming.FullyLoadUsedTextures': 1,
+            'r.Streaming.Boost': 30,
             'r.Streaming.UsingNewKuroStreaming': 1,
         }
     })
@@ -93,6 +94,7 @@ class WWMIConfig(ModelImporterConfig):
             'tick.AllowAsyncTickDispatch': 1,
         }
     })
+    texture_streaming_boost: float = 30.0
 
 
 @dataclass
@@ -320,6 +322,12 @@ class WWMIPackage(ModelImporterPackage):
         for section_name, section_data in Config.Importers.WWMI.Importer.engine_ini.items():
             for option_name, option_value in section_data.items():
                 ini.set_option(section_name, option_name, option_value)
+
+        # console_variables = Config.Importers.WWMI.Importer.engine_ini.get('ConsoleVariables', None)
+        # default_streaming_boost = console_variables.get('r.Streaming.Boost', None) if console_variables else None
+        if Config.Importers.WWMI.Importer.texture_streaming_boost != 30:
+            ini.set_option('ConsoleVariables', 'r.Streaming.Boost',
+                           Config.Importers.WWMI.Importer.texture_streaming_boost)
 
         if Config.Importers.WWMI.Importer.apply_perf_tweaks:
             for section_name, section_data in Config.Importers.WWMI.Importer.perf_tweaks.items():
