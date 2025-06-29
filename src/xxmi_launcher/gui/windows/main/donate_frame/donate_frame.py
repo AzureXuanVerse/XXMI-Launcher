@@ -118,12 +118,12 @@ class DonateFrame(UIFrame):
                     'Tips': 'https://ko-fi.com/nurarihyonmaou'
                 },
                 'Satan1c': {
-                    'Home': 'https://gamebanana.com/members/2789093',
+                    'Home': 'https://github.com/Satan1c',
                     'Tips': 'https://patreon.com/Satan1cL'
                 },
                 'Scyll': {
                     'Home': 'https://gamebanana.com/members/2644630',
-                    'Tips': 'https://gamebanana.com/members/2644630'
+                    'Tips': 'https://gamebanana.com/ripe?recipient=2644630'
                 },
                 'SilentNightSound': {
                     'Home': 'https://github.com/SilentNightSound',
@@ -150,6 +150,10 @@ class DonateFrame(UIFrame):
                 'ZZMI': {
                     'Creators': ['LeoTorrez', 'Scyll', 'SilentNightSound'],
                     'Maintainers': ['SinsOfSeven', 'LeoTorrez', 'Gustav0', 'Scyll', 'Satan1c']
+                },
+                'HIMI': {
+                    'Creators': ['SilentNightSound'],
+                    'Maintainers': ['LeoTorrez', 'SinsOfSeven']
                 },
             }
             platforms = {

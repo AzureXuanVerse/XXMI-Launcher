@@ -61,6 +61,7 @@ class ModelImporterConfig:
     package_name: str = ''
     importer_folder: str = ''
     game_folder: str = ''
+    use_launch_options: bool = True
     overwrite_ini: bool = True
     process_start_method: str = 'Native'
     xxmi_dll_init_delay: int = 0
@@ -625,6 +626,7 @@ class ModelImporterPackage(Package):
     def disable_duplicate_libraries(self, libs_path: Path):
         log.debug(f'Searching for duplicate libs...')
         mods_path = Config.Active.Importer.importer_path / 'Mods'
+        Paths.verify_path(mods_path)
 
         mods_namespaces = self.index_namespaces(mods_path, self.get_ini_exclude_patterns())
         packaged_namespaces = self.index_namespaces(libs_path, [])

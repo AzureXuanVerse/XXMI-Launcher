@@ -7,6 +7,7 @@ import time
 from typing import List
 from dataclasses import dataclass, field
 from pathlib import Path
+from textwrap import dedent
 
 import core.path_manager as Paths
 import core.event_manager as Events
@@ -106,6 +107,10 @@ class MigotoPackage(Package):
 
         dll_path = Config.Active.Importer.importer_path / 'd3d11.dll'
 
+        start_args = event.start_args
+        if Config.Active.Importer.use_launch_options:
+            start_args += Config.Active.Importer.launch_options.split()
+
         process_flags = subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_DEFAULT_ERROR_MODE
         process_flags |= ProcessPriority(Config.Active.Importer.process_priority).get_process_flag()
 
@@ -136,7 +141,7 @@ class MigotoPackage(Package):
                     start_method = Config.Active.Importer.process_start_method,
                     exe_path = str(event.start_exe_path),
                     work_dir = event.work_dir,
-                    start_args = event.start_args + Config.Active.Importer.launch_options.split(),
+                    start_args = start_args,
                     process_flags = process_flags,
                     process_name = process_name,
                     dll_paths = extra_dll_paths,
@@ -156,8 +161,8 @@ class MigotoPackage(Package):
                     if hooked:
                         raise ValueError(T('migoto_game_detection_timeout', 
                                          f'Failed to detect game process {process_name}!\n\n'
-                                         f'If game window takes more than {Config.Launcher.start_timeout} seconds to appear, adjust Timeout in Launcher Settings.\n\n'
-                                         f'If game crashed, try to clear Mods and ShaderFixes folders.'))
+                                         f'If game crashed, try to adjust XXMI Delay in General Settings or clear Mods and ShaderFixes folders.\n\n'
+                                         f'If game window takes more than {Config.Launcher.start_timeout} seconds to appear, adjust Timeout in Launcher Settings.'))
                     else:
                         raise ValueError(T('migoto_game_start_failed', f'Failed to start {process_name}!'))
 
@@ -191,7 +196,7 @@ class MigotoPackage(Package):
                 start_method=Config.Active.Importer.process_start_method,
                 exe_path=str(event.start_exe_path),
                 work_dir=event.work_dir,
-                start_args=event.start_args + Config.Active.Importer.launch_options.split(),
+                start_args=start_args,
                 process_flags=process_flags,
                 process_name=process_name,
                 dll_paths=dll_paths,
@@ -202,9 +207,10 @@ class MigotoPackage(Package):
             Events.Fire(Events.Application.WaitForProcess(process_name=process_name))
             result, pid = wait_for_process(process_name, with_window=True, timeout=Config.Launcher.start_timeout, check_visibility=True)
             if result == WaitResult.Timeout:
-                raise ValueError(T('migoto_game_detection_timeout_simple', 
+                raise ValueError(T('[migoto_game_detection_timeout]',
                                f'Failed to detect game process {process_name}!\n\n'
-                               f'If game crashed, try to clear Mods and ShaderFixes folders.'))
+                               f'If game crashed, try to adjust XXMI Delay in General Settings or clear Mods and ShaderFixes folders.\n\n'
+                               f'If game window takes more than {Config.Launcher.start_timeout} seconds to appear, adjust Timeout in Launcher Settings.'))
 
         # Wait a bit more for window to maximize
         time.sleep(1)

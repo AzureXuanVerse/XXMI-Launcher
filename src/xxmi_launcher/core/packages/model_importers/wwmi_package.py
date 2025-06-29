@@ -26,6 +26,7 @@ log = logging.getLogger(__name__)
 @dataclass
 class WWMIConfig(ModelImporterConfig):
     importer_folder: str = 'WWMI/'
+    use_launch_options: bool = False
     launch_options: str = '-SkipSplash'
     xxmi_dll_init_delay: int = 500
     d3dx_ini: Dict[
@@ -210,7 +211,12 @@ class WWMIPackage(ModelImporterPackage):
 
     def get_start_cmd(self, game_path: Path) -> Tuple[Path, List[str], Optional[str]]:
         game_exe_path = self.validate_game_exe_path(game_path)
-        return game_exe_path, ['Client', '-DisableModule=streamline', '-d3d11', '-dx11'], str(game_exe_path.parent)
+        if Config.Importers.WWMI.Importer.use_launch_options:
+            # Start WW directly to support launch options customization
+            return game_exe_path, ['-dx11'], str(game_exe_path.parent)
+        else:
+            # Start WW via wrapper exe (solves crashes for NVidia Optimus and some Steam version users)
+            return game_path / 'Wuthering Waves.exe', ['-dx11'], str(game_path)
 
     def initialize_game_launch(self, game_path: Path):
         # self.verify_plugins(game_path)

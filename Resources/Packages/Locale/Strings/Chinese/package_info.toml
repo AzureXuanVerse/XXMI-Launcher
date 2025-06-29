@@ -70,16 +70,12 @@ loc = "XXMI启动器快捷方式"
 
 # Migoto包相关
 [migoto_game_detection_timeout]
-src = "Failed to detect game process {process_name}!\n\nIf game window takes more than {timeout} seconds to appear, adjust Timeout in Launcher Settings.\n\nIf game crashed, try to clear Mods and ShaderFixes folders."
-loc = "检测游戏进程{process_name}失败！\n\n如果游戏窗口出现时间超过{timeout}秒，请在启动器设置中调整超时时间。\n\n如果游戏崩溃，请尝试清理Mods和ShaderFixes文件夹。"
+src = "Failed to detect game process {process_name}!\n\nIf game crashed, try to adjust XXMI Delay in General Settings or clear Mods and ShaderFixes folders.\n\nIf game window takes more than {Config.Launcher.start_timeout} seconds to appear, adjust Timeout in Launcher Settings."
+loc = "检测游戏进程{process_name}失败！\n\n如果游戏崩溃了，请在常规设置中尝试调整XXMI延迟，或者清空模组和ShaderFixes文件夹。\n\n如果游戏窗口出现时间超过{timeout}秒，请在启动器设置中调整超时时间。"
 
 [migoto_game_start_failed]
 src = "Failed to start {process_name}!"
 loc = "启动{process_name}失败！"
-
-[migoto_game_detection_timeout_simple]
-src = "Failed to detect game process {process_name}!\n\nIf game crashed, try to clear Mods and ShaderFixes folders."
-loc = "检测游戏进程{process_name}失败！\n\n如果游戏崩溃，请尝试清理Mods和ShaderFixes文件夹。"
 
 [migoto_restore_button]
 src = "Restore"
@@ -1067,6 +1063,10 @@ loc = "崩坏：星穹铁道模型导入器"
 src = "Genshin Impact Model Importer"
 loc = "原神模型导入器"
 
+[top_bar_himi_tooltip]
+src = "Honkai Impact Model Importer"
+loc = "崩坏3模型导入器"
+
 [top_bar_gamebanana_tooltip]
 src = "{importer} GameBanana"
 loc = "{importer} GameBanana"
@@ -1392,6 +1392,10 @@ loc = "包含\"StarRail.exe\"的文件夹路径。\n通常此文件夹名为\"Ga
 src = "Path to folder with \"GenshinImpact.exe\" or \"YuanShen.exe\" (CN).\nUsually this folder is named \"Genshin Impact Game\" and located inside \"DATA\" folder of GI installation folder."
 loc = "包含\"GenshinImpact.exe\"或\"YuanShen.exe\"（国服）的文件夹路径。\n通常此文件夹名为\"Genshin Impact Game\"，位于GI安装文件夹的\"DATA\"文件夹内。"
 
+[general_settings_game_folder_tooltip_himi]
+src = "Path to folder with \"BH3.exe\".\nUsually this folder is named \"Games\" and located inside \"DATA\" folder of HSR installation folder."
+loc = "包含\"BH3.exe\"的文件夹路径。\n通常此文件夹名为\"Games\"，位于崩坏3安装文件夹的\"DATA\"文件夹内。"
+
 [general_settings_game_folder_error]
 src = "Failed to detect Game Folder!"
 loc = "检测游戏文件夹失败！"
@@ -1429,8 +1433,16 @@ src = "Start Method:"
 loc = "启动方式："
 
 [general_settings_start_method_tooltip]
-src = "**Native**: Use native Python call to start game process (`subprocess.popen`).\n**Shell**: Use external library C++ call to start game process (`ShellExecute`)"
-loc = "**原生**：使用原生Python调用启动游戏进程（`subprocess.popen`）。\n**Shell**：使用外部库C++调用启动游戏进程（`ShellExecute`）"
+src = """
+**Native**: Create the game process directly. Usually it's the most reliable way.
+**Shell**: Start the game process via system console. Worth to try if you have some issues with Native.
+**Manual**: Skip launching the game on **Start** button press. Wait for user to launch it manually ({timeout}s timeout).
+"""
+loc = """
+**原生**：直接创建游戏进程。通常是最可靠的方式。
+**Shell**：通过系统控制台启动游戏进程。如果原生方式有问题可以尝试此选项。
+**手动**：按下**启动**按钮时不启动游戏。等待用户手动启动游戏（{timeout}秒超时）。
+"""
 
 [general_settings_xxmi_delay_label]
 src = "XXMI Delay:"
@@ -1513,8 +1525,12 @@ src = "This option allows to set FPS limit to 120.\n**Enabled**: Updates Graphic
 loc = "此选项允许将FPS限制设为120。\n**启用**：游戏启动时更新Windows注册表图形设置键值为120 FPS。\n**禁用**：对FPS设置无影响，使用游戏内设置撤销已强制的120 FPS。\n**警告！** 此调整仅支持全球HSR客户端，国服无效。\n*注意：编辑`HKEY_CURRENT_USER/SOFTWARE/Cognosphere/Star Rail/GraphicsSettings_Model_h2986158309`中的`FPS`值。*"
 
 [general_settings_unlock_fps_tooltip_gimi]
-src = "This option allows to force 120 FPS mode.\n**Enabled**: Launch game via `unlockfps_nc.exe` and let it run in background to keep FPS tweak applied.\n**Disabled**: Launch game via original `.exe` file, has no effect on FPS.\n*Hint: If FPS Unlocker package is outdated, you can manually update \"unlockfps_nc.exe\" from original repository.*\n*Local Path*: `Resources/Packages/GI-FPS-Unlocker/unlockfps_nc.exe`\n*Original Repository*: `https://github.com/34736384/genshin-fps-unlock`"
-loc = "此选项允许强制120 FPS模式。\n**启用**：通过`unlockfps_nc.exe`启动游戏并让其在后台运行以保持FPS调整生效。\n**禁用**：通过原始`.exe`文件启动游戏，对FPS无影响。\n*提示：如果FPS解锁包过时，可从原始仓库手动更新\"unlockfps_nc.exe\"。*\n*本地路径*：`Resources/Packages/GI-FPS-Unlocker/unlockfps_nc.exe`\n*原始仓库*：`https://github.com/34736384/genshin-fps-unlock`"
+src = "This option allows to set custom FPS limit.\n'**Warning!**: To minimize game engine glitches set FPS to 120 / 180 / 240 etc.\n'**Enabled**: Launch game via `unlockfps_nc.exe` and let it run in background to keep FPS tweak applied.\n**Disabled**: Launch game via original `.exe` file, has no effect on FPS.\n*Hint: If FPS Unlocker package is outdated, you can manually update \"unlockfps_nc.exe\" from original repository.*\n*Local Path*: `Resources/Packages/GI-FPS-Unlocker/unlockfps_nc.exe`\n*Original Repository*: `https://github.com/34736384/genshin-fps-unlock`"
+loc = "此选项允许设置自定义FPS限制。\n'**警告!**: 为了最大程度减少游戏引擎的故障，可将帧率设定为120/180/240等。.\n'**启用**：通过`unlockfps_nc.exe`启动游戏并让其在后台运行以保持FPS调整生效。\n**禁用**：通过原始`.exe`文件启动游戏，对FPS无影响。\n*提示：如果FPS解锁包过时，可从原始仓库手动更新\"unlockfps_nc.exe\"。*\n*本地路径*：`Resources/Packages/GI-FPS-Unlocker/unlockfps_nc.exe`\n*原始仓库*：`https://github.com/34736384/genshin-fps-unlock`"
+
+[general_settings_unlock_fps_tooltip_himi]
+src = "This option allows to set custom FPS limit.\n'**Enabled**: Updates Graphics Settings Windows Registry key with specified FPS value on game start.\n'**Disabled**: Has no effect on FPS settings, use in-game settings to undo already tweaked FPS."
+loc = "此选项允许设置自定义帧率限制。\n**启用**：在游戏启动时更新图形设置Windows注册表键，并设置指定的帧率。\n**禁用**：对帧率设置无影响，使用游戏内设置可撤销已调整的帧率。"
 
 [general_settings_window_mode_tooltip]
 src = "Game window mode when started with FPS Unlocker."
@@ -1640,8 +1656,8 @@ src = "Warning! This command also overrides `Launch Options` from General Settin
 loc = "警告！此命令还会覆盖常规设置中的`启动选项`。\n"
 
 [advanced_settings_custom_launch_tooltip_wwmi_warning]
-src = "Warning! Make sure to pass `Client -DisableModule=streamline` argument to Client-Win64-Shipping.exe to force DX11 mode!\n"
-loc = "警告！确保向Client-Win64-Shipping.exe传递`Client -DisableModule=streamline`参数以强制DX11模式！\n"
+src = "Warning! Make sure to pass `-dx11` argument to Client-Win64-Shipping.exe to force DX11 mode!\n"
+loc = "警告！确保向 Client-Win64-Shipping.exe 传递 `-dx11` 参数以强制 DX11 模式！\n"
 
 [advanced_settings_custom_launch_tooltip_note]
 src = "Note: If you want to start game exe with another custom exe, do it here.\n"
@@ -1862,3 +1878,70 @@ loc = """## 控制游戏将完整动画网格替换为简化LOD的距离：
 [general_settings_engine_settings_label]
 src = "Engine Settings:"
 loc = "引擎设置："
+
+# HIMI Package Messages
+[himi_game_exe_not_found]
+src = "Game executable {} not found!"
+loc = "未找到游戏可执行文件 {}！"
+
+[himi_updating_ini]
+src = "Updating HIMI main.ini..."
+loc = "正在更新 HIMI main.ini..."
+
+[himi_ini_not_found]
+src = "Failed to locate Core/HIMI/main.ini!"
+loc = "无法找到 Core/HIMI/main.ini！"
+
+[himi_registry_key_not_found]
+src = "Honkai Impact 3rd registry key is not found!\n\nPlease start the game without FPS tweak, change FPS to any value to create the record and try again.\n\nNote: Tweak is supported only for the Global client and will not work for CN."
+loc = "未找到崩坏3注册表项！\n\n请在不使用FPS调整的情况下启动游戏，更改FPS值以创建记录，然后重试。\n\n注意：此调整仅支持国际服客户端，不适用于国服。"
+
+[himi_graphics_settings_not_found]
+src = "Graphics Settings record is not found in Honkai Impact 3rd registry!\n\nPlease start the game without FPS tweak, change FPS to any value to create the record and try again."
+loc = "在崩坏3注册表中未找到图形设置记录！\n\n请在不使用FPS调整的情况下启动游戏，更改FPS值以创建记录，然后重试。"
+
+[himi_unknown_graphics_format]
+src = "Unknown Graphics Settings format: Data type {} is not {} of REG_BINARY!"
+loc = "未知的图形设置格式：数据类型 {} 不是 REG_BINARY 类型的 {}！"
+
+[himi_fps_key_not_found]
+src = "Unknown Graphics Settings format: \"TargetFrameRateForInLevel\" key not found!"
+loc = "未知的图形设置格式：未找到\"TargetFrameRateForInLevel\"键！"
+
+[himi_malformed_version]
+src = "Malformed HIMI version!"
+loc = "HIMI版本格式错误！"
+
+[himi_version_not_found]
+src = "Failed to locate HIMI version!"
+loc = "无法找到HIMI版本！"
+
+[himi_fps_unlock_failed]
+src = "Failed to configure FPS: {}"
+loc = "配置FPS失败：{}"
+
+[launch_options_tooltip_wwmi]
+src = """
+**Enabled**: Start game via **Client-Win64-Shipping.exe** with specified command line arguments.
+**Disabled (default)**: Start game normally via **Wuthering Waves.exe** (most reliable way).
+<font color="red">⚠ Game may crash with this option enabled! ⚠</font>
+"""
+loc = """
+**启用**：通过 **Client-Win64-Shipping.exe** 使用指定的命令行参数启动游戏。
+**禁用（默认）**：通过 **Wuthering Waves.exe** 正常启动游戏（最可靠的方式）。
+<font color="red">⚠ 启用此选项可能导致游戏崩溃！⚠</font>
+"""
+
+[launch_options_tooltip_default]
+src = """
+**Enabled**: Start game exe with specified command line arguments.
+**Disabled**: Ignore specified command line arguments and start game exe normally.
+"""
+loc = """
+**启用**：使用指定的命令行参数启动游戏可执行文件。
+**禁用**：忽略指定的命令行参数，正常启动游戏可执行文件。
+"""
+
+[general_settings_unlock_fps_label]
+src = "Unlock FPS:"
+loc = "解锁帧率："
